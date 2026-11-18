@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>MEMENTO — Yang perlu, bukan yang banyak</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-serif: "Cormorant Garamond", Georgia, serif;
+      --font-sans: "Inter", system-ui, sans-serif;
+
+      --bg: #ece6da;
+      --paper: #f7f2e7;
+      --paper-2: #efe9db;
+      --ink: #2a241c;
+      --ink-soft: #6b5f4e;
+      --muted: #9a8d78;
+      --faint: #c2b8a4;
+
+      --gold: #a8843c;
+      --crimson: #7a2e2a;
+      --sage: #7d8b6a;
+
+      --rule: 1px solid rgba(42, 36, 28, 0.16);
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #141210;
+      --paper: #1c1916;
+      --paper-2: #23201c;
+      --ink: #e8e0d0;
+      --ink-soft: #a49781;
+      --muted: #7d7160;
+      --faint: #4a4236;
+      --gold: #c9a75a;
+      --crimson: #b3504a;
+      --sage: #a4b28c;
+      --rule: 1px solid rgba(232, 224, 208, 0.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: var(--font-serif);
+      background-color: var(--bg);
+      background-image: radial-gradient(circle, rgba(42,36,28,0.05) 1px, transparent 1.2px);
+      background-size: 22px 22px;
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 64px 20px 96px;
+      transition: background-color 0.6s var(--ease), color 0.6s var(--ease);
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button, input { touch-action: manipulation; font-family: inherit; }
+
+    .paper {
+      width: 100%;
+      max-width: 640px;
+      background: var(--paper);
+      padding: 56px 64px 64px;
+      position: relative;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.03), 0 24px 60px rgba(42,36,28,0.10);
+      transition: background-color 0.6s var(--ease);
+      animation: settle 1.2s var(--ease) both;
+    }
+
+    @keyframes settle {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Ornament ===== */
+    .ornament {
+      text-align: center;
+      color: var(--gold);
+      font-size: 22px;
+      letter-spacing: 0.5em;
+      margin-bottom: 28px;
+      user-select: none;
+      transform: translateX(0.25em);
+    }
+
+    .date-line {
+      text-align: center;
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+    .date-line .roman { color: var(--gold); }
+
+    /* ===== Masthead ===== */
+    .masthead { text-align: center; margin-bottom: 44px; }
+    .kicker {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.52em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      transform: translateX(0.26em);
+    }
+    h1 {
+      font-size: clamp(40px, 7vw, 62px);
+      font-weight: 500;
+      line-height: 1.08;
+      letter-spacing: 0;
+      margin-bottom: 24px;
+    }
+    h1 em { font-style: italic; font-weight: 400; color: var(--gold); }
+
+    .aphorism {
+      font-style: italic;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 1.55;
+      color: var(--ink-soft);
+      max-width: 30ch;
+      margin: 0 auto;
+      min-height: 3.1em;
+      transition: opacity 0.8s var(--ease);
+    }
+    .aphorism.fade { opacity: 0; }
+    .aphorism .source {
+      display: block;
+      margin-top: 10px;
+      font-family: var(--font-sans);
+      font-style: normal;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ===== Progress ===== */
+    .progress { margin-bottom: 48px; }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .progress-meta .fraction {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 20px;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--gold);
+    }
+    .progress-track {
+      height: 1px;
+      background: var(--rule);
+      position: relative;
+    }
+    .progress-fill {
+      position: absolute;
+      left: 0; top: -1px;
+      height: 3px;
+      width: 0%;
+      background: var(--gold);
+      transition: width 1s var(--ease);
+    }
+
+    /* ===== Input ===== */
+    .input-zone { margin-bottom: 40px; }
+    .input-row {
+      display: flex;
+      align-items: stretch;
+      border-bottom: var(--rule);
+      transition: border-color 0.3s var(--ease);
+    }
+    .input-row:focus-within { border-color: var(--gold); }
+    #task-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 14px 0;
+      font-family: var(--font-serif);
+      font-size: 21px;
+      font-style: italic;
+      color: var(--ink);
+    }
+    #task-input::placeholder { color: var(--faint); }
+    .add-btn {
+      background: none;
+      border: none;
+      padding: 0 4px 0 16px;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: letter-spacing 0.3s var(--ease), color 0.3s;
+    }
+    .add-btn:hover { letter-spacing: 0.32em; color: var(--ink); }
+
+    .input-options { display: flex; gap: 24px; margin-top: 16px; align-items: center; }
+    #time-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      border-bottom: var(--rule);
+      outline: none;
+      padding: 6px 0;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      color-scheme: light;
+    }
+    :root[data-theme="dark"] #time-input { color-scheme: dark; }
+    #time-input:focus { color: var(--ink); border-color: var(--gold); }
+    .chip-btn {
+      background: none;
+      border: none;
+      border-bottom: var(--rule);
+      padding: 6px 0;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .chip-btn:hover { color: var(--ink); }
+    .chip-btn.active { color: var(--crimson); border-color: var(--crimson); }
+
+    /* ===== Filters ===== */
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: none;
+      border: none;
+      padding: 6px 0;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      position: relative;
+      transition: color 0.3s;
+    }
+    .filter-btn::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 100%; bottom: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: right 0.35s var(--ease);
+    }
+    .filter-btn:hover { color: var(--ink); }
+    .filter-btn.active { color: var(--ink); }
+    .filter-btn.active::after { right: 0; }
+    .filter-btn .count { color: var(--gold); margin-left: 4px; font-size: 10px; }
+
+    /* ===== List ===== */
+    .list {
+      list-style: none;
+      max-height: 440px;
+      overflow-y: auto;
+      padding-right: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .list::-webkit-scrollbar { width: 3px; }
+    .list::-webkit-scrollbar-track { background: transparent; }
+    .list::-webkit-scrollbar-thumb { background: var(--faint); }
+
+    .todo-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 18px 0;
+      border-bottom: var(--rule);
+      position: relative;
+      animation: itemIn 0.8s var(--ease) backwards;
+      transition: opacity 0.4s;
+    }
+    @keyframes itemIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .todo-item:hover .drag-handle { opacity: 1; }
+    .todo-item.dragging {
+      opacity: 0.92;
+      position: relative;
+      z-index: 40;
+      box-shadow: 0 12px 32px rgba(42,36,28,0.14);
+      background: var(--paper);
+    }
+    .todo-item.drag-over { border-bottom-color: var(--gold); }
+
+    .drag-handle {
+      position: absolute;
+      left: -22px;
+      top: 16px;
+      color: var(--faint);
+      cursor: grab;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 14px;
+      letter-spacing: -3px;
+      user-select: none;
+      touch-action: none;
+      padding: 6px 4px;
+    }
+    .drag-handle:active { cursor: grabbing; color: var(--gold); }
+
+    .check-wrap { flex-shrink: 0; margin-top: 3px; cursor: pointer; }
+    .check-wrap input { display: none; }
+    .marker {
+      width: 22px; height: 22px;
+      border: 1px solid var(--muted);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.4s var(--ease);
+      position: relative;
+    }
+    .marker::after {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0;
+      transform: scale(0.4);
+      transition: all 0.4s var(--ease);
+    }
+    .check-wrap:hover .marker { border-color: var(--gold); }
+    .check-wrap input:checked + .marker { border-color: var(--gold); }
+    .check-wrap input:checked + .marker::after { opacity: 1; transform: scale(1); }
+
+    .todo-body { flex: 1; min-width: 0; }
+    .todo-text {
+      display: block;
+      font-size: 21px;
+      font-weight: 500;
+      line-height: 1.35;
+      word-break: break-word;
+      cursor: pointer;
+      transition: color 0.5s var(--ease), opacity 0.5s;
+      position: relative;
+    }
+    .todo-item.important .todo-text::before {
+      content: "◆";
+      font-size: 9px;
+      color: var(--crimson);
+      position: absolute;
+      left: -20px;
+      top: 0.55em;
+    }
+    .todo-item.done .todo-text {
+      color: var(--faint);
+      font-style: italic;
+      text-decoration: line-through;
+      text-decoration-color: var(--muted);
+      text-decoration-thickness: 1px;
+    }
+
+    .deadline-badge {
+      display: inline-block;
+      margin-top: 6px;
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .deadline-badge.soon { color: var(--gold); }
+    .deadline-badge.overdue { color: var(--crimson); }
+
+    .edit-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--gold);
+      outline: none;
+      font-family: var(--font-serif);
+      font-size: 21px;
+      font-style: italic;
+      color: var(--ink);
+      padding: 0;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--faint);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s, color 0.3s;
+      flex-shrink: 0;
+      margin-top: 4px;
+      padding: 6px 2px;
+    }
+    .todo-item:hover .action-btn { opacity: 1; }
+    .action-btn:hover { color: var(--ink); }
+    .action-btn.del:hover { color: var(--crimson); }
+
+    .empty {
+      text-align: center;
+      padding: 64px 20px;
+      color: var(--muted);
+    }
+    .empty .big { font-size: 40px; font-style: italic; color: var(--faint); margin-bottom: 16px; }
+    .empty .title { font-size: 22px; font-style: italic; color: var(--ink-soft); margin-bottom: 6px; }
+    .empty .desc { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+
+    /* ===== Footer ===== */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 40px;
+      padding-top: 22px;
+      border-top: var(--rule);
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    #count b {
+      color: var(--gold);
+      font-weight: 400;
+      font-family: var(--font-serif);
+      font-size: 15px;
+      font-style: italic;
+      letter-spacing: 0;
+    }
+    #clear-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.3s;
+      padding: 6px 0;
+    }
+    #clear-btn:hover { color: var(--crimson); }
+
+    .theme-btn {
+      position: absolute;
+      top: 28px; right: 28px;
+      background: none;
+      border: none;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.3s;
+      padding: 8px;
+    }
+    .theme-btn:hover { color: var(--gold); }
+
+    /* ===== Perangkat sentuh: kontrol selalu terlihat ===== */
+    @media (hover: none) and (pointer: coarse) {
+      .action-btn, .drag-handle { opacity: 1; }
+      .drag-handle { left: -16px; }
+      .action-btn { padding: 10px 6px; }
+      .add-btn, .chip-btn, .filter-btn, .theme-btn, #clear-btn { padding: 12px 6px; }
+    }
+
+    /* ===== Responsif ===== */
+    @media (max-width: 640px) {
+      body { padding: 32px 14px 72px; }
+      .paper { padding: 40px 26px 48px; }
+      .theme-btn { top: 18px; right: 16px; }
+      .masthead { margin-bottom: 34px; }
+      .aphorism { font-size: 18px; }
+      .todo-text { font-size: 19px; }
+      #task-input { font-size: 18px; }
+      .edit-input { font-size: 19px; }
+      .filters { gap: 18px; }
+      .date-line { letter-spacing: 0.2em; }
+      .list { max-height: 52vh; }
+    }
+
+    @media (max-width: 380px) {
+      .paper { padding: 32px 18px 40px; }
+      h1 { font-size: 38px; }
+      .todo-text { font-size: 18px; }
+      #task-input { font-size: 17px; }
+      .input-options { flex-direction: column; align-items: stretch; gap: 14px; }
+      .chip-btn { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <div class="paper">
+    <button class="theme-btn" id="theme-btn" title="Ganti suasana">☾ malam</button>
+
+    <div class="ornament">❧</div>
+    <div class="date-line">
+      <span class="roman" id="date-roman">XVI · XI · MMXXVI</span>
+      <span style="opacity:.5"> — </span>
+      <span id="day-of-year">hari ke 320</span>
+    </div>
+
+    <header class="masthead">
+      <div class="kicker">Memento</div>
+      <h1>Yang <em>perlu</em>,<br />bukan yang banyak.</h1>
+      <p class="aphorism" id="aphorism"></p>
+    </header>
+
+    <div class="progress">
+      <div class="progress-meta">
+        <span id="progress-label">Belum ada yang ditunaikan</span>
+        <span class="fraction" id="progress-fraction">0 / 0</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="input-zone">
+      <div class="input-row">
+        <input type="text" id="task-input" placeholder="Apa yang sungguh perlu dikerjakan?" autocomplete="off" />
+        <button class="add-btn" id="add-btn">Catat</button>
+      </div>
+      <div class="input-options">
+        <input type="time" id="time-input" title="Waktu (boleh dikosongkan)" />
+        <button class="chip-btn" id="priority-btn">◆ yang utama</button>
+      </div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">Semua <span class="count" id="c-all"></span></button>
+      <button class="filter-btn" data-filter="active">Menunggu <span class="count" id="c-active"></span></button>
+      <button class="filter-btn" data-filter="done">Ditunaikan <span class="count" id="c-done"></span></button>
+    </div>
+
+    <ul class="list" id="todo-list"></ul>
+
+    <div class="footer">
+      <span id="count"></span>
+      <button id="clear-btn">Bersihkan yang ditunaikan</button>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('task-input');
+    const timeInput = document.getElementById('time-input');
+    const priorityBtn = document.getElementById('priority-btn');
+    const addBtn = document.getElementById('add-btn');
+    const list = document.getElementById('todo-list');
+    const countEl = document.getElementById('count');
+    const clearBtn = document.getElementById('clear-btn');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const themeBtn = document.getElementById('theme-btn');
+    const progressFill = document.getElementById('progress-fill');
+    const progressLabel = document.getElementById('progress-label');
+    const progressFraction = document.getElementById('progress-fraction');
+    const aphorismEl = document.getElementById('aphorism');
+
+    let todos = JSON.parse(localStorage.getItem('todos')) || [];
+    let currentFilter = 'all';
+    let newPriority = false;
+    let dragState = null;
+
+    /* ===== Penanggalan ===== */
+    const now = new Date();
+    function toRoman(n) {
+      const map = [[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
+      let s = '';
+      for (const [v, r] of map) { while (n >= v) { s += r; n -= v; } }
+      return s;
+    }
+    document.getElementById('date-roman').textContent =
+      toRoman(now.getDate()) + ' · ' +
+      now.toLocaleDateString('id-ID', { month: 'long' }).toUpperCase() + ' · ' +
+      toRoman(now.getFullYear());
+
+    const startOfYear = new Date(now.getFullYear(), 0, 0);
+    const dayOfYear = Math.floor((now - startOfYear) / 86400000);
+    document.getElementById('day-of-year').textContent =
+      'hari ke ' + dayOfYear + ' dari ' + (now.getFullYear() % 4 === 0 ? 366 : 365);
+
+    /* ===== Aforisme ===== */
+    const aphorisms = [
+      { t: "Bukan karena sedikit waktu yang kita punya, melainkan banyak yang kita sia-siakan.", s: "Seneca" },
+      { t: "Lakukan sedikit, tetapi dengan sepenuh hati.", s: "Pepatah lama" },
+      { t: "Cukup bukan berarti sedikit.", s: "Epikuros" },
+      { t: "Hidup ini singkat; seni itu panjang.", s: "Hippokrates" },
+      { t: "Apa yang jarang, itulah yang berharga.", s: "Anonim" },
+      { t: "Beristirahat juga adalah pekerjaan yang sah.", s: "Anonim" },
+      { t: "Jangan biarkan yang ramai menyingkirkan yang penting.", s: "Anonim" },
+    ];
+    let aIdx = dayOfYear % aphorisms.length;
+    function showAphorism() {
+      const a = aphorisms[aIdx];
+      aphorismEl.innerHTML = '“' + a.t + '”<span class="source">— ' + a.s + '</span>';
+    }
+    showAphorism();
+    setInterval(() => {
+      aphorismEl.classList.add('fade');
+      setTimeout(() => {
+        aIdx = (aIdx + 1) % aphorisms.length;
+        showAphorism();
+        aphorismEl.classList.remove('fade');
+      }, 800);
+    }, 16000);
+
+    /* ===== Tema ===== */
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      themeBtn.textContent = theme === 'dark' ? '☀ terang' : '☾ malam';
+      localStorage.setItem('theme', theme);
+    }
+    applyTheme(localStorage.getItem('theme') || 'light');
+    themeBtn.addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-theme');
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    });
+
+    priorityBtn.addEventListener('click', () => {
+      newPriority = !newPriority;
+      priorityBtn.classList.toggle('active', newPriority);
+      priorityBtn.textContent = newPriority ? '◆ ditandai' : '◆ yang utama';
+    });
+
+    function save() { localStorage.setItem('todos', JSON.stringify(todos)); }
+
+    /* ===== Format jam ===== */
+    function formatTime(timeStr) {
+      if (!timeStr) return null;
+      const [h, m] = timeStr.split(':').map(Number);
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
+      const diffMin = Math.round((d - new Date()) / 60000);
+      const label = 'pukul ' + String(h).padStart(2, '0') + '.' + String(m).padStart(2, '0');
+      let type = 'normal', prefix = '';
+      if (diffMin < 0) { type = 'overdue'; prefix = 'telah lewat · '; }
+      else if (diffMin <= 60) { type = 'soon'; prefix = 'segera · '; }
+      return { text: prefix + label, type };
+    }
+
+    function updateProgress() {
+      const total = todos.length;
+      const done = todos.filter(t => t.done).length;
+      const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+      progressFill.style.width = pct + '%';
+      progressFraction.textContent = done + ' / ' + total;
+      if (total === 0) progressLabel.textContent = 'Belum ada yang ditunaikan';
+      else if (pct === 100) progressLabel.textContent = 'Tuntas. Tinggal tenang.';
+      else progressLabel.textContent = 'Ditunaikan';
+    }
+
+    function render() {
+      list.innerHTML = '';
+      const filtered = todos.filter(todo => {
+        if (currentFilter === 'active') return !todo.done;
+        if (currentFilter === 'done') return todo.done;
+        return true;
+      });
+
+      document.getElementById('c-all').textContent = todos.length;
+      document.getElementById('c-active').textContent = todos.filter(t => !t.done).length;
+      document.getElementById('c-done').textContent = todos.filter(t => t.done).length;
+
+      if (filtered.length === 0) {
+        const empty = document.createElement('li');
+        empty.className = 'empty';
+        empty.innerHTML = '<div class="big">❧</div><div class="title">' +
+          (currentFilter === 'done' ? 'Belum ada yang ditunaikan.' :
+           currentFilter === 'active' ? 'Tak ada yang menunggu.' :
+           'Tidak ada yang perlu hari ini.') +
+          '</div><div class="desc">' +
+          (currentFilter === 'all' ? 'Beristirahat juga pekerjaan yang sah.' : 'Biarkan ia begitu.') + '</div>';
+        list.appendChild(empty);
+      }
+
+      filtered.forEach((todo, idx) => {
+        const li = document.createElement('li');
+        li.className = 'todo-item' + (todo.done ? ' done' : '') + (todo.important ? ' important' : '');
+        li.dataset.id = todo.id;
+        li.style.animationDelay = (idx * 0.06) + 's';
+
+        const handle = document.createElement('span');
+        handle.className = 'drag-handle';
+        handle.textContent = '⋮⋮';
+        handle.title = 'Seret untuk mengurutkan';
+
+        const checkWrap = document.createElement('label');
+        checkWrap.className = 'check-wrap';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = todo.done;
+        checkbox.addEventListener('change', () => toggleTodo(todo.id));
+        const marker = document.createElement('span');
+        marker.className = 'marker';
+        checkWrap.append(checkbox, marker);
+
+        const body = document.createElement('div');
+        body.className = 'todo-body';
+        const text = document.createElement('span');
+        text.className = 'todo-text';
+        text.textContent = todo.text;
+        text.addEventListener('dblclick', () => startEdit(todo.id, text));
+        body.appendChild(text);
+
+        if (todo.time) {
+          const t = formatTime(todo.time);
+          if (t) {
+            const badge = document.createElement('span');
+            badge.className = 'deadline-badge ' + t.type;
+            badge.textContent = t.text;
+            body.appendChild(badge);
+          }
+        }
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'action-btn';
+        editBtn.textContent = 'ubah';
+        editBtn.title = 'Ubah';
+        editBtn.addEventListener('click', () => startEdit(todo.id, text));
+
+        const del = document.createElement('button');
+        del.className = 'action-btn del';
+        del.textContent = 'hapus';
+        del.title = 'Hapus';
+        del.addEventListener('click', () => deleteTodo(todo.id));
+
+        li.append(handle, checkWrap, body, editBtn, del);
+
+        // ===== Drag & drop (pointer events: mouse + sentuh) =====
+        handle.addEventListener('pointerdown', e => startDrag(e, li));
+
+        li.addEventListener('pointermove', onDragMove);
+        li.addEventListener('pointerup', onDragEnd);
+        li.addEventListener('pointercancel', onDragEnd);
+
+        list.appendChild(li);
+      });
+
+      const remaining = todos.filter(t => !t.done).length;
+      countEl.innerHTML = 'masih <b>' + remaining + '</b> yang menunggu';
+      updateProgress();
+    }
+
+    /* ===== Drag helpers ===== */
+    function startDrag(e, li) {
+      if (dragState) return;
+      e.preventDefault();
+      li.setPointerCapture(e.pointerId);
+      dragState = {
+        id: Number(li.dataset.id),
+        el: li,
+        startY: e.clientY,
+      };
+      li.classList.add('dragging');
+    }
+
+    function computeTarget(y) {
+      const siblings = [...list.children].filter(
+        el => el !== dragState.el && el.classList.contains('todo-item')
+      );
+      for (const s of siblings) {
+        const r = s.getBoundingClientRect();
+        if (y < r.top + r.height / 2) return s;
+      }
+      return null; // akhir daftar
+    }
+
+    function onDragMove(e) {
+      if (!dragState) return;
+      const delta = e.clientY - dragState.startY;
+      dragState.el.style.transform = 'translateY(' + delta + 'px)';
+      document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+      const target = computeTarget(e.clientY);
+      if (target) target.classList.add('drag-over');
+    }
+
+    function onDragEnd(e) {
+      if (!dragState) return;
+      const y = e.clientY;
+      const target = computeTarget(y);
+      const id = dragState.id;
+
+      dragState.el.style.transform = '';
+      dragState.el.classList.remove('dragging');
+      document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+      dragState = null;
+
+      const fromIdx = todos.findIndex(t => t.id === id);
+      if (fromIdx === -1) { render(); return; }
+      const [moved] = todos.splice(fromIdx, 1);
+      let toIdx;
+      if (!target) {
+        toIdx = todos.length;
+      } else {
+        const tid = Number(target.dataset.id);
+        toIdx = todos.findIndex(t => t.id === tid);
+      }
+      todos.splice(toIdx, 0, moved);
+      save();
+      render();
+    }
+
+    /* ===== CRUD ===== */
+    function addTodo() {
+      const text = input.value.trim();
+      if (!text) { input.focus(); return; }
+      todos.push({
+        id: Date.now(),
+        text,
+        done: false,
+        important: newPriority,
+        time: timeInput.value || null
+      });
+      input.value = '';
+      timeInput.value = '';
+      newPriority = false;
+      priorityBtn.classList.remove('active');
+      priorityBtn.textContent = '◆ yang utama';
+      input.focus();
+      save();
+      render();
+    }
+
+    function toggleTodo(id) {
+      const t = todos.find(t => t.id === id);
+      if (t) t.done = !t.done;
+      save(); render();
+    }
+    function togglePriority(id) {
+      const t = todos.find(t => t.id === id);
+      if (t) t.important = !t.important;
+      save(); render();
+    }
+    function deleteTodo(id) {
+      todos = todos.filter(t => t.id !== id);
+      save(); render();
+    }
+    function clearDone() {
+      todos = todos.filter(t => !t.done);
+      save(); render();
+    }
+
+    function startEdit(id, textEl) {
+      const todo = todos.find(t => t.id === id);
+      if (!todo) return;
+      const editInput = document.createElement('input');
+      editInput.type = 'text';
+      editInput.className = 'edit-input';
+      editInput.value = todo.text;
+      textEl.replaceWith(editInput);
+      editInput.focus();
+      editInput.setSelectionRange(editInput.value.length, editInput.value.length);
+      function commit() {
+        const v = editInput.value.trim();
+        if (v) { todo.text = v; save(); }
+        render();
+      }
+      editInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') commit();
+        if (e.key === 'Escape') render();
+      });
+      editInput.addEventListener('blur', commit);
+    }
+
+    addBtn.addEventListener('click', addTodo);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') addTodo(); });
+    clearBtn.addEventListener('click', clearDone);
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>
